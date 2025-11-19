@@ -7,6 +7,10 @@
     <meta name="description" content="Organisme communautaire de la Montérégie depuis 8 ans. Jardinage urbain, collecte DEEE, bénévolat vert et sensibilisation environnementale.">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
     
+    <!-- Leaflet CSS for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -524,6 +528,461 @@
             animation: fadeInUp 0.6s ease-out;
         }
 
+        /* Gallery Section */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 4/3;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px var(--shadow);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            transform: translateY(0);
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 20px var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-green), var(--soft-green));
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .team-name {
+            color: var(--primary-green);
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-role {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        /* Partners Section */
+        .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .partner-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .partner-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .partner-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            background: linear-gradient(45deg, var(--light-green), var(--accent-green));
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        /* Calendar Section */
+        .calendar-container {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px var(--shadow);
+            margin-top: 2rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .calendar-nav {
+            background: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .calendar-nav:hover {
+            background: var(--primary-green);
+        }
+
+        .events-list {
+            margin-top: 2rem;
+        }
+
+        .event-item {
+            background: var(--cream);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .event-date {
+            font-weight: bold;
+            color: var(--primary-green);
+        }
+
+        .event-title {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+        }
+
+        /* Donation Section */
+        .donation {
+            background: var(--cream);
+            text-align: center;
+        }
+
+        .donation-amounts {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .amount-btn {
+            padding: 1rem 2rem;
+            border: 2px solid var(--accent-green);
+            background: white;
+            color: var(--primary-green);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .amount-btn:hover,
+        .amount-btn.active {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .donation-form {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: var(--primary-green);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        /* Blog Section */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .blog-card {
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .blog-image {
+            height: 200px;
+            background: linear-gradient(45deg, var(--light-green), var(--accent-green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .blog-title {
+            color: var(--primary-green);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Contact Section */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .contact-info {
+            background: var(--cream);
+            padding: 2rem;
+            border-radius: 15px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .hours-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .hours-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .hours-table th,
+        .hours-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .hours-table th {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .contact-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .map-container {
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 2rem;
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        /* Admin Interface */
+        .admin-section {
+            background: var(--cream);
+            padding: 3rem 5%;
+            margin-top: 2rem;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-tab {
+            padding: 1rem 2rem;
+            border: none;
+            background: white;
+            color: var(--primary-green);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .admin-tab.active {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .admin-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px var(--shadow);
+        }
+
+        .admin-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .admin-form .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .close-modal:hover {
+            color: var(--primary-green);
+        }
+
         /* Scroll behavior */
         html {
             scroll-behavior: smooth;
@@ -542,9 +1001,12 @@
                 <li><a href="#accueil">Accueil</a></li>
                 <li><a href="#mission">Mission</a></li>
                 <li><a href="#activites">Activités</a></li>
-                <li><a href="#benevoles">Bénévolat</a></li>
-                <li><a href="#collectes">Collectes DEEE</a></li>
-                <li><a href="#articles">Articles</a></li>
+                <li><a href="#galerie">Galerie</a></li>
+                <li><a href="#equipe">Équipe</a></li>
+                <li><a href="#partenaires">Partenaires</a></li>
+                <li><a href="#calendrier">Calendrier</a></li>
+                <li><a href="#dons">Dons</a></li>
+                <li><a href="#blog">Blog</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
 
@@ -679,6 +1141,352 @@
         </div>
     </section>
 
+    <!-- Galerie Section -->
+    <section class="section" id="galerie">
+        <h2 class="section-title">Galerie Photo & Vidéo</h2>
+        <p style="text-align: center; margin-bottom: 2rem;">Découvrez nos activités passées et l'impact de notre communauté</p>
+        
+        <div class="gallery-grid">
+            <div class="gallery-item" onclick="openModal('modal1')">
+                <div style="background: linear-gradient(45deg, var(--light-green), var(--accent-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">🌱</div>
+                <div class="gallery-overlay">
+                    <h3>Atelier Jardinage Urbain</h3>
+                    <p>15 participants ont appris à cultiver leurs légumes</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('modal2')">
+                <div style="background: linear-gradient(45deg, var(--accent-green), var(--soft-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">🧴</div>
+                <div class="gallery-overlay">
+                    <h3>Produits Ménagers Écologiques</h3>
+                    <p>Fabrication de savons naturels</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('modal3')">
+                <div style="background: linear-gradient(45deg, var(--primary-green), var(--light-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">🧹</div>
+                <div class="gallery-overlay">
+                    <h3>Corvée de Nettoyage</h3>
+                    <p>50 bénévoles au Parc de la Montérégie</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('modal4')">
+                <div style="background: linear-gradient(45deg, var(--soft-green), var(--accent-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">📱</div>
+                <div class="gallery-overlay">
+                    <h3>Collecte DEEE</h3>
+                    <p>500kg de déchets électroniques collectés</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('modal5')">
+                <div style="background: linear-gradient(45deg, var(--light-green), var(--primary-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">🎥</div>
+                <div class="gallery-overlay">
+                    <h3>Vidéo Sensibilisation</h3>
+                    <p>Notre dernière campagne de sensibilisation</p>
+                </div>
+            </div>
+            <div class="gallery-item" onclick="openModal('modal6')">
+                <div style="background: linear-gradient(45deg, var(--accent-green), var(--primary-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">🌿</div>
+                <div class="gallery-overlay">
+                    <h3>Plantation Communautaire</h3>
+                    <p>100 arbres plantés avec la communauté</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Équipe Section -->
+    <section class="section" id="equipe">
+        <h2 class="section-title">Notre Équipe & Bénévoles</h2>
+        
+        <h3 style="text-align: center; color: var(--primary-green); margin-bottom: 2rem;">Équipe Permanente</h3>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar">👩‍💼</div>
+                <div class="team-name">Josianne Parent</div>
+                <div class="team-role">Directrice Générale</div>
+                <p>Responsable du projet et coordinatrice des activités. Passionnée d'environnement depuis 15 ans.</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">👨‍🔬</div>
+                <div class="team-name">Marc Dubois</div>
+                <div class="team-role">Coordonnateur Scientifique</div>
+                <p>Biologiste de formation, il supervise nos articles de vulgarisation et nos programmes éducatifs.</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">👩‍🌾</div>
+                <div class="team-name">Sophie Tremblay</div>
+                <div class="team-role">Responsable Jardinage</div>
+                <p>Experte en agriculture urbaine, elle anime nos ateliers de jardinage et de compostage.</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">👨‍💻</div>
+                <div class="team-name">Alex Martineau</div>
+                <div class="team-role">Coordonnateur Bénévoles</div>
+                <p>Gère notre programme de bénévolat et organise les corvées de nettoyage communautaires.</p>
+            </div>
+        </div>
+
+        <h3 style="text-align: center; color: var(--primary-green); margin: 3rem 0 2rem;">Bénévoles Actifs</h3>
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-avatar">👨‍🎓</div>
+                <div class="team-name">Pierre Lavoie</div>
+                <div class="team-role">Bénévole Senior</div>
+                <p>Avec nous depuis 5 ans, spécialisé dans la collecte DEEE et la sensibilisation.</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">👩‍🎨</div>
+                <div class="team-name">Marie Côté</div>
+                <div class="team-role">Designer Bénévole</div>
+                <p>Crée nos affiches et matériel de communication. Passionnée de design écoresponsable.</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">👨‍🏫</div>
+                <div class="team-name">Jean Leblanc</div>
+                <div class="team-role">Formateur Bénévole</div>
+                <p>Enseignant à la retraite, il anime nos ateliers sur les produits ménagers écologiques.</p>
+            </div>
+            <div class="team-card">
+                <div class="team-avatar">👩‍💻</div>
+                <div class="team-name">Laura Kim</div>
+                <div class="team-role">Gestionnaire Réseaux</div>
+                <p>Étudiante en marketing, elle gère nos réseaux sociaux et notre communication digitale.</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="#" class="btn btn-primary" onclick="openModal('volunteer-modal')">Rejoindre notre équipe</a>
+        </div>
+    </section>
+
+    <!-- Partenaires Section -->
+    <section class="section" id="partenaires">
+        <h2 class="section-title">Nos Partenaires & Commanditaires</h2>
+        
+        <h3 style="text-align: center; color: var(--primary-green); margin-bottom: 2rem;">Partenaires Institutionnels</h3>
+        <div class="partners-grid">
+            <div class="partner-card">
+                <div class="partner-logo">🏛️</div>
+                <h3>Ministère de l'Environnement</h3>
+                <p>Subvention pour le développement de nos programmes</p>
+            </div>
+            <div class="partner-card">
+                <div class="partner-logo">🏢</div>
+                <h3>Ville de Longueuil</h3>
+                <p>Partenaire municipal pour nos corvées de nettoyage</p>
+            </div>
+            <div class="partner-card">
+                <div class="partner-logo">🎓</div>
+                <h3>UQAM - Faculté Sciences</h3>
+                <p>Collaboration pour la recherche environnementale</p>
+            </div>
+        </div>
+
+        <h3 style="text-align: center; color: var(--primary-green); margin: 3rem 0 2rem;">Commanditaires Locaux</h3>
+        <div class="partners-grid">
+            <div class="partner-card">
+                <div class="partner-logo">🛒</div>
+                <h3>Épicerie Verte Plus</h3>
+                <p>Fournisseur de produits biologiques pour nos ateliers</p>
+            </div>
+            <div class="partner-card">
+                <div class="partner-logo">🌱</div>
+                <h3>Jardinerie Éco-Nature</h3>
+                <p>Partenaire pour nos activités de jardinage urbain</p>
+            </div>
+            <div class="partner-card">
+                <div class="partner-logo">♻️</div>
+                <h3>Recyc-Pro</h3>
+                <p>Centre de recyclage partenaire pour les DEEE</p>
+            </div>
+            <div class="partner-card">
+                <div class="partner-logo">🏪</div>
+                <h3>Café Équitable</h3>
+                <p>Lieu de rencontre pour nos réunions communautaires</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="#contact" class="btn btn-primary">Devenir Partenaire</a>
+        </div>
+    </section>
+
+    <!-- Calendrier Section -->
+    <section class="section" id="calendrier">
+        <h2 class="section-title">Calendrier des Activités</h2>
+        
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <button class="calendar-nav" onclick="changeMonth(-1)">‹ Précédent</button>
+                <h3 id="current-month">Décembre 2025</h3>
+                <button class="calendar-nav" onclick="changeMonth(1)">Suivant ›</button>
+            </div>
+            
+            <div class="events-list">
+                <div class="event-item">
+                    <div class="event-date">2 décembre 2025 - 14h00</div>
+                    <div class="event-title">Atelier Produits Ménagers Écologiques</div>
+                    <p>Apprenez à fabriquer vos propres produits d'entretien naturels. Places limitées à 20 participants.</p>
+                    <button class="btn btn-primary btn-small" onclick="openModal('inscription-modal')">S'inscrire</button>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-date">9 décembre 2025 - 9h00</div>
+                    <div class="event-title">Corvée de Nettoyage - Parc Riverside</div>
+                    <p>Participez au nettoyage du parc Riverside avec notre équipe de bénévoles.</p>
+                    <button class="btn btn-primary btn-small" onclick="openModal('inscription-modal')">S'inscrire</button>
+                </div>
+                
+                <div class="event-item">
+                    <div class="event-date">15 décembre 2025 - 10h00</div>
+                    <div class="event-title">Jardinage d'Hiver - Préparation des Sols</div>
+                    <p>Atelier sur la préparation des jardins pour l'hiver et la planification pour le printemps.</p>
+                    <button class="btn btn-primary btn-small" onclick="openModal('inscription-modal')">S'inscrire</button>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-date">20 janvier 2026 - 13h00</div>
+                    <div class="event-title">Collecte DEEE - Secteur Nord</div>
+                    <p>Service de collecte de déchets électroniques à domicile pour le secteur nord de Longueuil.</p>
+                    <button class="btn btn-primary btn-small" onclick="openModal('collecte-modal')">Demander collecte</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <button class="btn btn-secondary" onclick="openModal('admin-modal')">Interface Administration</button>
+        </div>
+    </section>
+
+    <!-- Dons Section -->
+    <section class="section donation" id="dons">
+        <h2 class="section-title">Soutenez Notre Mission</h2>
+        <p>Votre contribution nous aide à développer nos programmes et à atteindre plus de citoyens de la Montérégie.</p>
+        
+        <div class="donation-amounts">
+            <button class="amount-btn" onclick="selectAmount(25)">25$</button>
+            <button class="amount-btn" onclick="selectAmount(50)">50$</button>
+            <button class="amount-btn" onclick="selectAmount(100)">100$</button>
+            <button class="amount-btn" onclick="selectAmount(250)">250$</button>
+            <button class="amount-btn" onclick="selectAmount(0)">Autre montant</button>
+        </div>
+
+        <div class="donation-form">
+            <h3 style="text-align: center; margin-bottom: 1.5rem; color: var(--primary-green);">Formulaire de Don Sécurisé</h3>
+            <form id="donation-form">
+                <div class="form-group">
+                    <label for="amount">Montant du don ($)</label>
+                    <input type="number" id="amount" name="amount" min="5" step="5" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="donor-name">Nom complet</label>
+                    <input type="text" id="donor-name" name="donor-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="donor-email">Adresse email</label>
+                    <input type="email" id="donor-email" name="donor-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="donor-phone">Téléphone (optionnel)</label>
+                    <input type="tel" id="donor-phone" name="donor-phone">
+                </div>
+                
+                <div class="form-group">
+                    <label for="donation-type">Type de don</label>
+                    <select id="donation-type" name="donation-type" required>
+                        <option value="">Sélectionnez</option>
+                        <option value="one-time">Don unique</option>
+                        <option value="monthly">Don mensuel</option>
+                        <option value="annual">Don annuel</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" required>
+                        J'accepte les <a href="#" style="color: var(--primary-green);">conditions d'utilisation</a>
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox">
+                        Je souhaite recevoir des reçus fiscaux par email
+                    </label>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    🔒 Faire un don sécurisé
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="section" id="blog">
+        <h2 class="section-title">Articles & Nouvelles</h2>
+        <p style="text-align: center; margin-bottom: 2rem;">Découvrez nos articles de vulgarisation scientifique et nos dernières nouvelles environnementales</p>
+        
+        <div class="blog-grid">
+            <article class="blog-card">
+                <div class="blog-image">📰</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>15 novembre 2025</span>
+                        <span>Sensibilisation</span>
+                    </div>
+                    <h3 class="blog-title">L'impact des microplastiques sur nos écosystèmes</h3>
+                    <p>Une analyse approfondie de la pollution plastique et ses effets sur la biodiversité de la Montérégie...</p>
+                    <a href="#" class="btn btn-primary btn-small">Lire l'article</a>
+                </div>
+            </article>
+            
+            <article class="blog-card">
+                <div class="blog-image">🌱</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>10 novembre 2025</span>
+                        <span>Jardinage</span>
+                    </div>
+                    <h3 class="blog-title">Préparer son jardin pour l'hiver québécois</h3>
+                    <p>Guide pratique pour protéger vos plantes et préparer la terre pour le printemps prochain...</p>
+                    <a href="#" class="btn btn-primary btn-small">Lire l'article</a>
+                </div>
+            </article>
+            
+            <article class="blog-card">
+                <div class="blog-image">♻️</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>5 novembre 2025</span>
+                        <span>Recyclage</span>
+                    </div>
+                    <h3 class="blog-title">Bilan de notre collecte DEEE d'automne</h3>
+                    <p>Retour sur notre dernière collecte de déchets électroniques : 2 tonnes collectées et recyclées...</p>
+                    <a href="#" class="btn btn-primary btn-small">Lire l'article</a>
+                </div>
+            </article>
+            
+            <article class="blog-card">
+                <div class="blog-image">🧴</div>
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>1 novembre 2025</span>
+                        <span>DIY Écologique</span>
+                    </div>
+                    <h3 class="blog-title">5 recettes de produits ménagers faits maison</h3>
+                    <p>Découvrez comment fabriquer vos propres nettoyants avec des ingrédients simples et naturels...</p>
+                    <a href="#" class="btn btn-primary btn-small">Lire l'article</a>
+                </div>
+            </article>
+        </div>
+
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="#" class="btn btn-secondary">Voir tous les articles</a>
+        </div>
+    </section>
+
     <!-- Newsletter Section -->
     <section class="section newsletter">
         <h2 class="section-title">Restez Informés</h2>
@@ -688,6 +1496,106 @@
             <input type="email" class="newsletter-input" placeholder="Votre adresse email" required>
             <button type="submit" class="btn btn-primary">S'abonner</button>
         </form>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section" id="contact">
+        <h2 class="section-title">Contactez-Nous</h2>
+        
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3 style="color: var(--primary-green); margin-bottom: 2rem;">Informations de Contact</h3>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">📍</div>
+                    <div>
+                        <strong>Adresse</strong><br>
+                        945 Ch. de Chambly<br>
+                        Longueuil, QC J4H 4A9
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <div>
+                        <strong>Email</strong><br>
+                        info@vertlavenir.org
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">📞</div>
+                    <div>
+                        <strong>Téléphone</strong><br>
+                        (450) 123-4567
+                    </div>
+                </div>
+
+                <div class="hours-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="2">Heures d'ouverture</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Lundi - Vendredi</td>
+                                <td>9h à 17h</td>
+                            </tr>
+                            <tr>
+                                <td>Samedi</td>
+                                <td>10h à 14h</td>
+                            </tr>
+                            <tr>
+                                <td>Dimanche</td>
+                                <td>Fermé</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="contact-form">
+                <h3 style="color: var(--primary-green); margin-bottom: 1.5rem;">Envoyez-nous un message</h3>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="contact-name">Nom complet</label>
+                        <input type="text" id="contact-name" name="contact-name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contact-email">Adresse email</label>
+                        <input type="email" id="contact-email" name="contact-email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contact-subject">Sujet</label>
+                        <select id="contact-subject" name="contact-subject" required>
+                            <option value="">Sélectionnez un sujet</option>
+                            <option value="info">Demande d'information</option>
+                            <option value="volunteer">Bénévolat</option>
+                            <option value="partnership">Partenariat</option>
+                            <option value="activity">Inscription à une activité</option>
+                            <option value="deee">Collecte DEEE</option>
+                            <option value="other">Autre</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contact-message">Message</label>
+                        <textarea id="contact-message" name="contact-message" rows="5" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Envoyer le message</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Map -->
+        <div class="map-container">
+            <div id="map" style="height: 100%; width: 100%;"></div>
+        </div>
     </section>
 
     <!-- Footer -->
@@ -729,6 +1637,321 @@
             <p>&copy; 2025 Vert l'avenir. Tous droits réservés. | <a href="#" style="color: #888;">Politique de confidentialité</a> | <a href="#" style="color: #888;">Accessibilité</a></p>
         </div>
     </footer>
+
+    <!-- Modals -->
+    <!-- Gallery Modals -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal1')">&times;</span>
+            <h2>Atelier Jardinage Urbain</h2>
+            <div style="background: linear-gradient(45deg, var(--light-green), var(--accent-green)); height: 300px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 6rem; color: white; margin: 1rem 0;">🌱</div>
+            <p>Notre dernier atelier de jardinage urbain a rassemblé 15 participants enthousiastes qui ont appris les techniques de base pour cultiver leurs propres légumes en ville. L'atelier a couvert la préparation du sol, le choix des variétés adaptées au climat québécois, et les techniques de compostage urbain.</p>
+            <p><strong>Date:</strong> 15 octobre 2025<br>
+            <strong>Lieu:</strong> Jardin communautaire de Longueuil<br>
+            <strong>Participants:</strong> 15 personnes</p>
+        </div>
+    </div>
+
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal2')">&times;</span>
+            <h2>Produits Ménagers Écologiques</h2>
+            <div style="background: linear-gradient(45deg, var(--accent-green), var(--soft-green)); height: 300px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 6rem; color: white; margin: 1rem 0;">🧴</div>
+            <p>Atelier de fabrication de produits ménagers écologiques où les participants ont appris à créer leurs propres savons, détergents et nettoyants avec des ingrédients naturels. Une initiative qui permet de réduire l'usage de produits chimiques tout en économisant.</p>
+            <p><strong>Date:</strong> 22 octobre 2025<br>
+            <strong>Formateur:</strong> Jean Leblanc<br>
+            <strong>Produits créés:</strong> Savon liquide, nettoyant multi-surfaces, lessive écologique</p>
+        </div>
+    </div>
+
+    <div id="modal3" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal3')">&times;</span>
+            <h2>Corvée de Nettoyage</h2>
+            <div style="background: linear-gradient(45deg, var(--primary-green), var(--light-green)); height: 300px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 6rem; color: white; margin: 1rem 0;">🧹</div>
+            <p>Grande corvée de nettoyage au Parc de la Montérégie avec 50 bénévoles mobilisés. Cette action citoyenne a permis de collecter plus de 200kg de déchets et de sensibiliser le public à l'importance de préserver nos espaces naturels.</p>
+            <p><strong>Date:</strong> 28 octobre 2025<br>
+            <strong>Lieu:</strong> Parc de la Montérégie<br>
+            <strong>Résultats:</strong> 200kg de déchets collectés, 50 bénévoles</p>
+        </div>
+    </div>
+
+    <!-- Inscription Modal -->
+    <div id="inscription-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('inscription-modal')">&times;</span>
+            <h2>Inscription à une Activité</h2>
+            <form id="inscription-form">
+                <div class="form-group">
+                    <label for="activity-select">Activité souhaitée</label>
+                    <select id="activity-select" name="activity-select" required>
+                        <option value="">Sélectionnez une activité</option>
+                        <option value="jardinage">Atelier Jardinage Urbain</option>
+                        <option value="produits">Produits Ménagers Écologiques</option>
+                        <option value="nettoyage">Corvée de Nettoyage</option>
+                        <option value="collecte">Collecte DEEE</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="participant-name">Nom complet</label>
+                    <input type="text" id="participant-name" name="participant-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="participant-email">Email</label>
+                    <input type="email" id="participant-email" name="participant-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="participant-phone">Téléphone</label>
+                    <input type="tel" id="participant-phone" name="participant-phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="participant-experience">Expérience préalable</label>
+                    <select id="participant-experience" name="participant-experience">
+                        <option value="beginner">Débutant</option>
+                        <option value="intermediate">Intermédiaire</option>
+                        <option value="advanced">Avancé</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="participant-comments">Commentaires ou questions</label>
+                    <textarea id="participant-comments" name="participant-comments" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Confirmer l'inscription</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Volunteer Modal -->
+    <div id="volunteer-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('volunteer-modal')">&times;</span>
+            <h2>Devenir Bénévole</h2>
+            <form id="volunteer-form">
+                <div class="form-group">
+                    <label for="volunteer-name">Nom complet</label>
+                    <input type="text" id="volunteer-name" name="volunteer-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="volunteer-email">Email</label>
+                    <input type="email" id="volunteer-email" name="volunteer-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="volunteer-phone">Téléphone</label>
+                    <input type="tel" id="volunteer-phone" name="volunteer-phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="volunteer-availability">Disponibilité</label>
+                    <select id="volunteer-availability" name="volunteer-availability" required>
+                        <option value="">Sélectionnez</option>
+                        <option value="weekdays">Jours de semaine</option>
+                        <option value="weekends">Fins de semaine</option>
+                        <option value="both">Les deux</option>
+                        <option value="events">Événements ponctuels seulement</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="volunteer-interests">Domaines d'intérêt (plusieurs choix possibles)</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
+                        <label style="font-weight: normal;"><input type="checkbox" name="interests" value="jardinage"> Jardinage urbain</label>
+                        <label style="font-weight: normal;"><input type="checkbox" name="interests" value="nettoyage"> Corvées de nettoyage</label>
+                        <label style="font-weight: normal;"><input type="checkbox" name="interests" value="deee"> Collecte DEEE</label>
+                        <label style="font-weight: normal;"><input type="checkbox" name="interests" value="education"> Éducation/Animation</label>
+                        <label style="font-weight: normal;"><input type="checkbox" name="interests" value="communication"> Communication</label>
+                        <label style="font-weight: normal;"><input type="checkbox" name="interests" value="admin"> Administration</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="volunteer-experience">Expérience pertinente</label>
+                    <textarea id="volunteer-experience" name="volunteer-experience" rows="3" placeholder="Décrivez votre expérience en environnement, bénévolat, ou autres compétences utiles..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Soumettre ma candidature</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Collecte DEEE Modal -->
+    <div id="collecte-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('collecte-modal')">&times;</span>
+            <h2>Demande de Collecte DEEE</h2>
+            <p style="margin-bottom: 1.5rem;">Remplissez ce formulaire pour demander une collecte de déchets électroniques à votre domicile.</p>
+            <form id="collecte-form">
+                <div class="form-group">
+                    <label for="collecte-name">Nom complet</label>
+                    <input type="text" id="collecte-name" name="collecte-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="collecte-address">Adresse complète</label>
+                    <textarea id="collecte-address" name="collecte-address" rows="2" required placeholder="Numéro, rue, ville, code postal"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="collecte-phone">Téléphone</label>
+                    <input type="tel" id="collecte-phone" name="collecte-phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="collecte-email">Email</label>
+                    <input type="email" id="collecte-email" name="collecte-email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="collecte-items">Types d'appareils à collecter</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem;">
+                        <label style="font-weight: normal;"><input type="checkbox" name="deee-items" value="ordinateurs"> Ordinateurs/Laptops</label>
+                        <label style="font-weight: normal;"><input type="checkbox" name="deee-items" value="television"> Télévisions</label>
+                        <label style="font-weight: normal;"><input type="checkbox" name="deee-items" value="telephone"> Téléphones</label>
+                        <label style="font-weight: normal;"><input type="checkbox" name="deee-items" value="electromenager"> Électroménagers</label>
+                        <label style="font-weight: normal;"><input type="checkbox" name="deee-items" value="audio"> Équipement audio</label>
+                        <label style="font-weight: normal;"><input type="checkbox" name="deee-items" value="autres"> Autres</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="collecte-quantity">Quantité approximative</label>
+                    <select id="collecte-quantity" name="collecte-quantity" required>
+                        <option value="">Sélectionnez</option>
+                        <option value="1-5">1 à 5 appareils</option>
+                        <option value="6-10">6 à 10 appareils</option>
+                        <option value="11-20">11 à 20 appareils</option>
+                        <option value="20+">Plus de 20 appareils</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="collecte-preferred-date">Date préférée</label>
+                    <select id="collecte-preferred-date" name="collecte-preferred-date" required>
+                        <option value="">Sélectionnez</option>
+                        <option value="janvier">Collecte de janvier 2026</option>
+                        <option value="juin">Collecte de juin 2026</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="collecte-comments">Commentaires ou instructions spéciales</label>
+                    <textarea id="collecte-comments" name="collecte-comments" rows="3" placeholder="Accès particulier, étage, autres détails..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Soumettre la demande</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Interface Modal -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close-modal" onclick="closeModal('admin-modal')">&times;</span>
+            <h2>Interface d'Administration</h2>
+            <p style="margin-bottom: 2rem;">Interface simplifiée pour la gestion du contenu et des activités.</p>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="showAdminTab('events')">Gérer les Événements</button>
+                <button class="admin-tab" onclick="showAdminTab('articles')">Articles/Blog</button>
+                <button class="admin-tab" onclick="showAdminTab('inscriptions')">Inscriptions</button>
+                <button class="admin-tab" onclick="showAdminTab('newsletter')">Newsletter</button>
+            </div>
+            
+            <div class="admin-content">
+                <div id="admin-events" class="admin-panel">
+                    <h3>Ajouter un Nouvel Événement</h3>
+                    <form class="admin-form">
+                        <div class="form-group">
+                            <label>Titre de l'événement</label>
+                            <input type="text" placeholder="Ex: Atelier Jardinage Urbain">
+                        </div>
+                        <div class="form-group">
+                            <label>Date et heure</label>
+                            <input type="datetime-local">
+                        </div>
+                        <div class="form-group">
+                            <label>Type d'activité</label>
+                            <select>
+                                <option>Jardinage urbain</option>
+                                <option>Produits ménagers</option>
+                                <option>Corvée de nettoyage</option>
+                                <option>Collecte DEEE</option>
+                                <option>Autre</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre de places</label>
+                            <input type="number" min="1" max="100">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Description</label>
+                            <textarea rows="4" placeholder="Description détaillée de l'activité..."></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <button type="submit" class="btn btn-primary">Publier l'événement</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="admin-articles" class="admin-panel" style="display: none;">
+                    <h3>Nouvel Article de Blog</h3>
+                    <form class="admin-form">
+                        <div class="form-group">
+                            <label>Titre de l'article</label>
+                            <input type="text">
+                        </div>
+                        <div class="form-group">
+                            <label>Catégorie</label>
+                            <select>
+                                <option>Sensibilisation</option>
+                                <option>Jardinage</option>
+                                <option>Recyclage</option>
+                                <option>DIY Écologique</option>
+                                <option>Nouvelles</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Contenu de l'article</label>
+                            <textarea rows="8" placeholder="Rédigez votre article ici..."></textarea>
+                        </div>
+                        <div class="form-group full-width">
+                            <button type="submit" class="btn btn-primary">Publier l'article</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div id="admin-inscriptions" class="admin-panel" style="display: none;">
+                    <h3>Gestion des Inscriptions</h3>
+                    <div style="background: var(--cream); padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                        <strong>Prochaines activités :</strong><br>
+                        • Produits Ménagers Écologiques (2 déc) : 12/20 inscrits<br>
+                        • Corvée de Nettoyage (9 déc) : 23 inscrits<br>
+                        • Jardinage d'Hiver (15 déc) : 8/15 inscrits
+                    </div>
+                    <button class="btn btn-secondary">Exporter la liste des participants</button>
+                    <button class="btn btn-secondary">Envoyer rappel par email</button>
+                </div>
+                
+                <div id="admin-newsletter" class="admin-panel" style="display: none;">
+                    <h3>Newsletter & Communications</h3>
+                    <div style="background: var(--cream); padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                        <strong>Abonnés actuels :</strong> 1,247 personnes<br>
+                        <strong>Dernière newsletter :</strong> Octobre 2025<br>
+                        <strong>Prochaine newsletter :</strong> Janvier 2026
+                    </div>
+                    <button class="btn btn-primary">Créer une nouvelle newsletter</button>
+                    <button class="btn btn-secondary">Gérer les abonnés</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         // Mobile menu toggle
@@ -804,6 +2027,142 @@
                     alert('English version coming soon! / Version anglaise à venir !');
                 }
             });
+        });
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Calendar functions
+        function changeMonth(direction) {
+            // Placeholder for calendar navigation
+            const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 
+                           'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            const currentMonth = document.getElementById('current-month');
+            let currentText = currentMonth.textContent;
+            
+            // Simple month changing logic (placeholder)
+            if (direction === 1) {
+                currentMonth.textContent = 'Janvier 2026';
+            } else {
+                currentMonth.textContent = 'Novembre 2025';
+            }
+        }
+
+        // Donation amount selection
+        function selectAmount(amount) {
+            document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (amount > 0) {
+                document.getElementById('amount').value = amount;
+            } else {
+                document.getElementById('amount').value = '';
+                document.getElementById('amount').focus();
+            }
+        }
+
+        // Admin interface functions
+        function showAdminTab(tabName) {
+            // Hide all panels
+            document.querySelectorAll('.admin-panel').forEach(panel => {
+                panel.style.display = 'none';
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected panel and activate tab
+            document.getElementById('admin-' + tabName).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        // Form submissions
+        document.getElementById('donation-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = document.getElementById('amount').value;
+            const name = document.getElementById('donor-name').value;
+            
+            alert(`Merci ${name} pour votre généreuse contribution de ${amount}$ ! Votre don sera traité de manière sécurisée. Vous recevrez un reçu par email.`);
+            this.reset();
+            document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('active'));
+        });
+
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('contact-name').value;
+            const subject = document.getElementById('contact-subject').value;
+            
+            alert(`Merci ${name} ! Votre message concernant "${subject}" a été envoyé. Nous vous répondrons dans les 24-48 heures.`);
+            this.reset();
+        });
+
+        document.getElementById('inscription-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('participant-name').value;
+            const activity = document.getElementById('activity-select').options[document.getElementById('activity-select').selectedIndex].text;
+            
+            alert(`Inscription confirmée ! Merci ${name}, vous êtes maintenant inscrit(e) à "${activity}". Vous recevrez un email de confirmation avec tous les détails.`);
+            closeModal('inscription-modal');
+            this.reset();
+        });
+
+        document.getElementById('volunteer-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('volunteer-name').value;
+            
+            alert(`Merci ${name} pour votre intérêt à devenir bénévole ! Votre candidature a été reçue. Notre coordonnateur bénévoles vous contactera sous peu.`);
+            closeModal('volunteer-modal');
+            this.reset();
+        });
+
+        document.getElementById('collecte-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('collecte-name').value;
+            const preferredDate = document.getElementById('collecte-preferred-date').options[document.getElementById('collecte-preferred-date').selectedIndex].text;
+            
+            alert(`Demande de collecte enregistrée ! Merci ${name}. Nous vous contacterons pour confirmer votre collecte DEEE pour la période de ${preferredDate}.`);
+            closeModal('collecte-modal');
+            this.reset();
+        });
+
+        // Initialize map
+        function initMap() {
+            // Coordinates for 945 Ch. de Chambly, Longueuil, QC
+            const location = [45.5309, -73.4853];
+            
+            const map = L.map('map').setView(location, 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            
+            L.marker(location).addTo(map)
+                .bindPopup('<strong>Vert l\'avenir</strong><br>945 Ch. de Chambly<br>Longueuil, QC J4H 4A9')
+                .openPopup();
+        }
+
+        // Initialize map when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Small delay to ensure the map container is ready
+            setTimeout(initMap, 500);
         });
     </script>
 </body>
