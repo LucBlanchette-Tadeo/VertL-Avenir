@@ -345,7 +345,7 @@
 
         .activity-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(45, 90, 39, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 90, 39, 0.15);
         }
 
         .activity-image {
@@ -987,6 +987,66 @@
         html {
             scroll-behavior: smooth;
         }
+
+        /* Edit buttons for admin */
+        .edit-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(45, 90, 39, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .edit-btn:hover {
+            background: var(--accent-green);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-header {
+            position: relative;
+        }
+
+        .activity-card,
+        .gallery-item,
+        .team-card,
+        .partner-card,
+        .event-item {
+            position: relative;
+        }
+
+        .activity-card .edit-btn,
+        .gallery-item .edit-btn,
+        .team-card .edit-btn,
+        .partner-card .edit-btn,
+        .event-item .edit-btn {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .activity-card:hover .edit-btn,
+        .gallery-item:hover .edit-btn,
+        .team-card:hover .edit-btn,
+        .partner-card:hover .edit-btn,
+        .event-item:hover .edit-btn {
+            opacity: 1;
+        }
+
+        .map-container {
+            position: relative;
+        }
     </style>
 </head>
 <body>
@@ -1089,53 +1149,60 @@
 
     <!-- Activities Section -->
     <section class="section" id="activites">
-        <h2 class="section-title">Nos Services</h2>
+        <div class="section-header">
+            <h2 class="section-title">Nos Services</h2>
+            <button class="edit-btn">✏️ Éditer la section</button>
+        </div>
         
         <div class="activities-grid">
             <div class="activity-card">
+                <button class="edit-btn">✏️</button>
                 <div class="activity-image">🌿</div>
                 <div class="activity-content">
                     <h3>Jardinage Urbain</h3>
                     <p>Ateliers mensuels pour apprendre à cultiver ses propres légumes et herbes aromatiques, même en ville.</p>
                     <div class="activity-meta">
                         <span class="activity-date">Prochain atelier : 25 novembre</span>
-                        <a href="Inscription.html" class="btn btn-primary btn-small">S'inscrire</a>
+                        <a href="#" class="btn btn-primary btn-small">S'inscrire</a>
                     </div>
                 </div>
             </div>
 
             <div class="activity-card">
+                <button class="edit-btn">✏️</button>
                 <div class="activity-image">🧴</div>
                 <div class="activity-content">
                     <h3>Produits Ménagers Écologiques</h3>
                     <p>Apprenez à fabriquer vos propres produits d'entretien naturels, économiques et respectueux de l'environnement.</p>
                     <div class="activity-meta">
                         <span class="activity-date">Prochain atelier : 2 décembre</span>
-                        <a href="Inscription.html" class="btn btn-primary btn-small">S'inscrire</a>
+                        <a href="#" class="btn btn-primary btn-small">S'inscrire</a>
                     </div>
                 </div>
             </div>
 
             <div class="activity-card">
+                <button class="edit-btn">✏️</button>
                 <div class="activity-image">🧹</div>
                 <div class="activity-content">
                     <h3>Corvées de Nettoyage</h3>
                     <p>Participez au nettoyage de nos parcs et rivières avec notre programme de bénévolat vert.</p>
                     <div class="activity-meta">
                         <span class="activity-date">Prochaine corvée : 9 décembre</span>
-                        <a href="Inscription.html" class="btn btn-primary btn-small">Rejoindre</a>
+                        <a href="#benevoles" class="btn btn-primary btn-small">Rejoindre</a>
                     </div>
                 </div>
             </div>
 
             <div class="activity-card">
+                <button class="edit-btn">✏️</button>
                 <div class="activity-image">📱</div>
                 <div class="activity-content">
                     <h3>Collecte DEEE à Domicile</h3>
                     <p>Service de collecte de déchets électroniques à domicile deux fois par année pour un recyclage responsable.</p>
                     <div class="activity-meta">
                         <span class="activity-date">Prochaine collecte : Printemps 2026</span>
-                        <a href="Inscription.html" class="btn btn-primary btn-small">Demander</a>
+                        <a href="#collectes" class="btn btn-primary btn-small">Demander</a>
                     </div>
                 </div>
             </div>
@@ -1144,11 +1211,15 @@
 
     <!-- Galerie Section -->
     <section class="section" id="galerie">
-        <h2 class="section-title">Galerie Photo & Vidéo</h2>
+        <div class="section-header">
+            <h2 class="section-title">Galerie Photo & Vidéo</h2>
+            <button class="edit-btn">✏️ Éditer la galerie</button>
+        </div>
         <p style="text-align: center; margin-bottom: 2rem;">Découvrez nos activités passées et l'impact de notre communauté</p>
         
         <div class="gallery-grid">
             <div class="gallery-item" onclick="openModal('modal1')">
+                <button class="edit-btn" onclick="event.stopPropagation()">✏️</button>
                 <div style="background: linear-gradient(45deg, var(--light-green), var(--accent-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">🌱</div>
                 <div class="gallery-overlay">
                     <h3>Atelier Jardinage Urbain</h3>
@@ -1156,6 +1227,7 @@
                 </div>
             </div>
             <div class="gallery-item" onclick="openModal('modal2')">
+                <button class="edit-btn" onclick="event.stopPropagation()">✏️</button>
                 <div style="background: linear-gradient(45deg, var(--accent-green), var(--soft-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">🧴</div>
                 <div class="gallery-overlay">
                     <h3>Produits Ménagers Écologiques</h3>
@@ -1163,6 +1235,7 @@
                 </div>
             </div>
             <div class="gallery-item" onclick="openModal('modal3')">
+                <button class="edit-btn" onclick="event.stopPropagation()">✏️</button>
                 <div style="background: linear-gradient(45deg, var(--primary-green), var(--light-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">🧹</div>
                 <div class="gallery-overlay">
                     <h3>Corvée de Nettoyage</h3>
@@ -1170,6 +1243,7 @@
                 </div>
             </div>
             <div class="gallery-item" onclick="openModal('modal4')">
+                <button class="edit-btn" onclick="event.stopPropagation()">✏️</button>
                 <div style="background: linear-gradient(45deg, var(--soft-green), var(--accent-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">📱</div>
                 <div class="gallery-overlay">
                     <h3>Collecte DEEE</h3>
@@ -1177,6 +1251,7 @@
                 </div>
             </div>
             <div class="gallery-item" onclick="openModal('modal5')">
+                <button class="edit-btn" onclick="event.stopPropagation()">✏️</button>
                 <div style="background: linear-gradient(45deg, var(--light-green), var(--primary-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">🎥</div>
                 <div class="gallery-overlay">
                     <h3>Vidéo Sensibilisation</h3>
@@ -1184,6 +1259,7 @@
                 </div>
             </div>
             <div class="gallery-item" onclick="openModal('modal6')">
+                <button class="edit-btn" onclick="event.stopPropagation()">✏️</button>
                 <div style="background: linear-gradient(45deg, var(--accent-green), var(--primary-green)); height: 100%; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: white;">🌿</div>
                 <div class="gallery-overlay">
                     <h3>Plantation Communautaire</h3>
@@ -1195,29 +1271,36 @@
 
     <!-- Équipe Section -->
     <section class="section" id="equipe">
-        <h2 class="section-title">Notre Équipe & Bénévoles</h2>
+        <div class="section-header">
+            <h2 class="section-title">Notre Équipe & Bénévoles</h2>
+            <button class="edit-btn">✏️ Éditer l'équipe</button>
+        </div>
         
         <h3 style="text-align: center; color: var(--primary-green); margin-bottom: 2rem;">Équipe Permanente</h3>
         <div class="team-grid">
             <div class="team-card">
+                <button class="edit-btn">✏️</button>
                 <div class="team-avatar">👩‍💼</div>
                 <div class="team-name">Josianne Parent</div>
                 <div class="team-role">Directrice Générale</div>
                 <p>Responsable du projet et coordinatrice des activités. Passionnée d'environnement depuis 15 ans.</p>
             </div>
             <div class="team-card">
+                <button class="edit-btn">✏️</button>
                 <div class="team-avatar">👨‍🔬</div>
                 <div class="team-name">Marc Dubois</div>
                 <div class="team-role">Coordonnateur Scientifique</div>
                 <p>Biologiste de formation, il supervise nos articles de vulgarisation et nos programmes éducatifs.</p>
             </div>
             <div class="team-card">
+                <button class="edit-btn">✏️</button>
                 <div class="team-avatar">👩‍🌾</div>
                 <div class="team-name">Sophie Tremblay</div>
                 <div class="team-role">Responsable Jardinage</div>
                 <p>Experte en agriculture urbaine, elle anime nos ateliers de jardinage et de compostage.</p>
             </div>
             <div class="team-card">
+                <button class="edit-btn">✏️</button>
                 <div class="team-avatar">👨‍💻</div>
                 <div class="team-name">Alex Martineau</div>
                 <div class="team-role">Coordonnateur Bénévoles</div>
@@ -1228,24 +1311,28 @@
         <h3 style="text-align: center; color: var(--primary-green); margin: 3rem 0 2rem;">Bénévoles Actifs</h3>
         <div class="team-grid">
             <div class="team-card">
+                <button class="edit-btn">✏️</button>
                 <div class="team-avatar">👨‍🎓</div>
                 <div class="team-name">Pierre Lavoie</div>
                 <div class="team-role">Bénévole Senior</div>
                 <p>Avec nous depuis 5 ans, spécialisé dans la collecte DEEE et la sensibilisation.</p>
             </div>
             <div class="team-card">
+                <button class="edit-btn">✏️</button>
                 <div class="team-avatar">👩‍🎨</div>
                 <div class="team-name">Marie Côté</div>
                 <div class="team-role">Designer Bénévole</div>
                 <p>Crée nos affiches et matériel de communication. Passionnée de design écoresponsable.</p>
             </div>
             <div class="team-card">
+                <button class="edit-btn">✏️</button>
                 <div class="team-avatar">👨‍🏫</div>
                 <div class="team-name">Jean Leblanc</div>
                 <div class="team-role">Formateur Bénévole</div>
                 <p>Enseignant à la retraite, il anime nos ateliers sur les produits ménagers écologiques.</p>
             </div>
             <div class="team-card">
+                <button class="edit-btn">✏️</button>
                 <div class="team-avatar">👩‍💻</div>
                 <div class="team-name">Laura Kim</div>
                 <div class="team-role">Gestionnaire Réseaux</div>
@@ -1260,21 +1347,27 @@
 
     <!-- Partenaires Section -->
     <section class="section" id="partenaires">
-        <h2 class="section-title">Nos Partenaires & Commanditaires</h2>
+        <div class="section-header">
+            <h2 class="section-title">Nos Partenaires & Commanditaires</h2>
+            <button class="edit-btn">✏️ Éditer </button>
+        </div>
         
         <h3 style="text-align: center; color: var(--primary-green); margin-bottom: 2rem;">Partenaires Institutionnels</h3>
         <div class="partners-grid">
             <div class="partner-card">
+                <button class="edit-btn">✏️</button>
                 <div class="partner-logo">🏛️</div>
                 <h3>Ministère de l'Environnement</h3>
                 <p>Subvention pour le développement de nos programmes</p>
             </div>
             <div class="partner-card">
+                <button class="edit-btn">✏️</button>
                 <div class="partner-logo">🏢</div>
                 <h3>Ville de Longueuil</h3>
                 <p>Partenaire municipal pour nos corvées de nettoyage</p>
             </div>
             <div class="partner-card">
+                <button class="edit-btn">✏️</button>
                 <div class="partner-logo">🎓</div>
                 <h3>UQAM - Faculté Sciences</h3>
                 <p>Collaboration pour la recherche environnementale</p>
@@ -1284,21 +1377,25 @@
         <h3 style="text-align: center; color: var(--primary-green); margin: 3rem 0 2rem;">Commanditaires Locaux</h3>
         <div class="partners-grid">
             <div class="partner-card">
+                <button class="edit-btn">✏️</button>
                 <div class="partner-logo">🛒</div>
                 <h3>Épicerie Verte Plus</h3>
                 <p>Fournisseur de produits biologiques pour nos ateliers</p>
             </div>
             <div class="partner-card">
+                <button class="edit-btn">✏️</button>
                 <div class="partner-logo">🌱</div>
                 <h3>Jardinerie Éco-Nature</h3>
                 <p>Partenaire pour nos activités de jardinage urbain</p>
             </div>
             <div class="partner-card">
+                <button class="edit-btn">✏️</button>
                 <div class="partner-logo">♻️</div>
                 <h3>Recyc-Pro</h3>
                 <p>Centre de recyclage partenaire pour les DEEE</p>
             </div>
             <div class="partner-card">
+                <button class="edit-btn">✏️</button>
                 <div class="partner-logo">🏪</div>
                 <h3>Café Équitable</h3>
                 <p>Lieu de rencontre pour nos réunions communautaires</p>
@@ -1312,8 +1409,10 @@
 
     <!-- Calendrier Section -->
     <section class="section" id="calendrier">
-        <h2 class="section-title">Calendrier des Activités</h2>
-        
+                <div class="section-header">
+            <h2 class="section-title">Calendrier des Activités</h2>
+            <button class="edit-btn">✏️ Éditer le calendrier</button>
+        </div>
         <div class="calendar-container">
             <div class="calendar-header">
                 <button class="calendar-nav" onclick="changeMonth(-1)">‹ Précédent</button>
